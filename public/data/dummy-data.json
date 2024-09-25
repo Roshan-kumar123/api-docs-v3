@@ -1,0 +1,1317 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Identity Management",
+      "version": "1.0.0",
+      "description": "Identity management apis for account inquiry"
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "paths": {
+      "/api/v1/idm/verifycredential": {
+        "post": {
+            "id":1,
+          "summary": "Verify User Credentials",
+          "description": "This endpoint verifies the credentials of a user by sending their username and password to the Identity Management API and provide access token to access inquiry endpoints.",
+          "tags": [
+            "Identity Management"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Transaction ID provided by the user.",
+                      "example": "trx-verifycred-0001"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "The username to be verified.",
+                      "example": "apiusernamexxxx"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "The password associated with the username.",
+                      "example": "apipasswordxxxx"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Api-key",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "API key for authenticating the request.",
+              "example": "apikeyxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified credentials",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "fef98b5f-273b-4ae0-b98f-f8cf460f90d9"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "access_token": {
+                            "type": "string",
+                            "description": "The access token for further authentication.",
+                            "example": "xxxxxx"
+                          },
+                          "token_type": {
+                            "type": "string",
+                            "description": "The type of token returned.",
+                            "example": "Bearer Token"
+                          },
+                          "expiry_in": {
+                            "type": "integer",
+                            "description": "The duration in seconds for which the token is valid.",
+                            "example": 3600
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid API key or credentials"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyStatusMsisdn": {
+        "post": {
+            "id":2,
+          "summary": "Verify Status of MSISDN",
+          "description": "This endpoint verifies the status of an MSISDN (phone number) by sending a merchant transaction ID and MSISDN to the API.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "MSISDN Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifymsisdn-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified MSISDN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "cefa8fc5-b5cb-4ec0-907d-400bf9c0a7e9"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "is_msisdn_active": {
+                            "type": "boolean",
+                            "description": "Indicates whether the MSISDN is active.",
+                            "example": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifySubscriberType": {
+        "post": {
+            "id":3,
+          "summary": "Verify Subscriber Type",
+          "description": "This endpoint verifies whether the subscriber type for a given MSISDN is prepaid or post-paid.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "Subscriber Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifysubstype-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified subscriber type",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "650f7706-923e-4c7e-acbf-e57af1af7672"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "subscriber_type": {
+                            "type": "boolean",
+                            "description": "- True indicates the subscriber type is Prepaid.\n- False indicates the subscriber type is Post-paid.\n",
+                            "example": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyTenure": {
+        "post": {
+            "id":4,
+          "summary": "Verify Tenure of MSISDN",
+          "description": "This endpoint verifies the tenure (duration of service) for a given MSISDN.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "Tenure Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifytenure-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified tenure of MSISDN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "2607050d-a627-482a-bdeb-5aab6d7e1097"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "tenureRange": {
+                            "type": "integer",
+                            "description": "- 1: Less than 1 month (\u003C= 30 days)\n- 2: 1 – 3 months (30 days \u003C M \u003C= 90 days)\n- 3: 3 – 6 months (90 days \u003C M \u003C= 180 days)\n- 4: 6 – 12 months (180 days \u003C M \u003C= 365 days)\n- 5: More than 12 months (\u003E 365 days)\n",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyValidationMsisdn": {
+        "post": {
+            "id":5,
+          "summary": "Verify the Validation of MSISDN",
+          "description": "This endpoint verifies the validation of an MSISDN by sending a merchant transaction ID and MSISDN to the API.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "MSISDN Validation"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifyvalid-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully validated MSISDN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "33d29f7f-ba8f-4037-ab5d-7e5125b5dcd2"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "is_msisdn_valid": {
+                            "type": "boolean",
+                            "description": "Indicates whether the MSISDN is valid.",
+                            "example": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyImsiChanges": {
+        "post": {
+            "id":6,
+          "summary": "Verify IMSI Changes",
+          "description": "This endpoint verifies if the IMSI of a device has changed over a specified period, based on the MSISDN provided.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "IMSI Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifyimsichanges-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) for which IMSI changes are being checked.",
+                      "example": 62856123456
+                    },
+                    "period": {
+                      "type": "integer",
+                      "example": 30,
+                      "enum": [1, 7, 30, 60, 90],
+                      "description": "- 1 indicates validation of IMSI changes in the last 1 day\n- 7 indicates validation of IMSI changes in the last 7 days\n- 30 indicates validation of IMSI changes in the last 30 days\n- 60 indicates validation of IMSI changes in the last 60 days\n- 90 indicates validation of IMSI changes in the last 90 days\n"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified IMSI changes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "3747eb57-e57c-4bc5-90fd-6dfc78074bbf"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "flag_1m_simswap": {
+                            "type": "boolean",
+                            "description": "- True indicates IMSI changes detected within 30 days.\n- False indicates IMSI changes not detected within 30 days.\n",
+                            "example": true
+                          },
+                          "flag_3m_simswap": {
+                            "type": "boolean",
+                            "description": "- True indicates IMSI changes detected within 90 days.\n- False indicates IMSI changes not detected within 90 days.\n",
+                            "example": false
+                          },
+                          "flag_2m_simswap": {
+                            "type": "boolean",
+                            "description": "- True indicates IMSI changes detected within 60 days.\n- False indicates IMSI changes not detected within 60 days.\n",
+                            "example": false
+                          },
+                          "flag_1w_simswap": {
+                            "type": "boolean",
+                            "description": "- True indicates IMSI changes detected within 7 days.\n- False indicates IMSI changes not detected within 7 days.\n",
+                            "example": false
+                          },
+                          "flag_1d_simswap": {
+                            "type": "boolean",
+                            "description": "- True indicates IMSI changes detected within 1 day.\n- False indicates IMSI changes not detected within 1 day.\n",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyImeiChanges": {
+        "post": {
+            "id":7,
+          "summary": "Verify IMEI Changes",
+          "description": "This endpoint verifies whether the IMEI associated with a given MSISDN has changed within a specified period.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "IMEI Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifyieichanges-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify for IMEI changes.",
+                      "example": 62856123456
+                    },
+                    "period": {
+                      "type": "integer",
+                      "example": 30,
+                      "enum": [1, 7, 30, 60, 90]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified IMEI changes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "3747eb57-e57c-4bc5-90fd-6dfc78074bbf"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "flag_1d_imei_changes": {
+                            "type": "boolean",
+                            "description": "- True indicates IMEI changes detected within the last 1 day.\n- False indicates no IMEI changes detected within the last 1 day.\n",
+                            "example": false
+                          },
+                          "flag_1w_imei_changes": {
+                            "type": "boolean",
+                            "description": "- True indicates IMEI changes detected within the last 7 days.\n- False indicates no IMEI changes detected within the last 7 days.\n",
+                            "example": false
+                          },
+                          "flag_1m_imei_changes": {
+                            "type": "boolean",
+                            "description": "- True indicates IMEI changes detected within the last 30 days.\n- False indicates no IMEI changes detected within the last 30 days.\n",
+                            "example": true
+                          },
+                          "flag_2m_imei_changes": {
+                            "type": "boolean",
+                            "description": "- True indicates IMEI changes detected within the last 60 days.\n- False indicates no IMEI changes detected within the last 60 days.\n",
+                            "example": false
+                          },
+                          "flag_3m_imei_changes": {
+                            "type": "boolean",
+                            "description": "- True indicates IMEI changes detected within the last 90 days.\n- False indicates no IMEI changes detected within the last 90 days.\n",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyNik": {
+        "post": {
+            "id":8,
+          "summary": "Verify NIK with MSISDN",
+          "description": "This endpoint verifies if the provided NIK (National Identification Number) is valid and matches with the MSISDN.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "NIK Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifynik-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    },
+                    "nik": {
+                      "type": "string",
+                      "description": "The NIK (National Identification Number) to verify.",
+                      "example": 123456789012345
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified NIK and MSISDN",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "b20e06ff-911b-4d65-91f5-874ab6bf01a7"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "is_nik_valid": {
+                            "type": "boolean",
+                            "description": "- True indicates that the NIK is valid and matches with the MSISDN.\n- False indicates that the NIK is invalid or does not match with the MSISDN.\n",
+                            "example": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyNikChanges": {
+        "post": {
+            "id":9,
+          "summary": "Verify NIK Changes",
+          "description": "This endpoint verifies whether the NIK (National Identification Number) associated with the MSISDN has changed within a specified period.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "NIK Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifynikchanges-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify for NIK changes.",
+                      "example": 62856123456
+                    },
+                    "period": {
+                      "type": "integer",
+                      "description": "The period in days within which NIK changes are being checked (1, 7, 30, 60, 90 days).",
+                      "example": 7,
+                      "enum": [1, 7, 30, 60, 90],
+                      "default": 7
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified NIK changes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "650f7706-923e-4c7e-acbf-e57af1af7672"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "flag_1d_nik": {
+                            "type": "boolean",
+                            "description": "- True indicates NIK changes detected in the last 1 day.\n- False indicates NIK changes not detected in the last 1 day.\n",
+                            "example": false
+                          },
+                          "flag_1w_nik": {
+                            "type": "boolean",
+                            "description": "- True indicates NIK changes detected in the last 7 days.\n- False indicates NIK changes not detected in the last 7 days.\n",
+                            "example": true
+                          },
+                          "flag_1m_nik": {
+                            "type": "boolean",
+                            "description": "- True indicates NIK changes detected in the last 30 days.\n- False indicates NIK changes not detected in the last 30 days.\n",
+                            "example": false
+                          },
+                          "flag_2m_nik": {
+                            "type": "boolean",
+                            "description": "- True indicates NIK changes detected in the last 60 days.\n- False indicates NIK changes not detected in the last 60 days.\n",
+                            "example": false
+                          },
+                          "flag_3m_nik": {
+                            "type": "boolean",
+                            "description": "- True indicates NIK changes detected in the last 90 days.\n- False indicates NIK changes not detected in the last 90 days.\n",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyRecycleNumber": {
+        "post": {
+            "id":10,
+          "summary": "Verify Recycle Number",
+          "description": "This endpoint verifies if a MSISDN (phone number) has been recycled within a specified period.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "Recycle Number Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifyRecycleNumber-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    },
+                    "period": {
+                      "type": "integer",
+                      "description": "The period in days to check for the recycling flag (1, 7, 30, 60, 90 days).",
+                      "example": 7,
+                      "enum": [1, 7, 30, 60, 90],
+                      "default": 7
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified recycle number status",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "650f7706-923e-4c7e-acbf-e57af1af7672"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "flag_1d_recycle": {
+                            "type": "boolean",
+                            "description": "- True indicates a recycle number flag detected within the last 1 day.\n- False indicates no recycle number flag detected within the last 1 day.\n",
+                            "example": false
+                          },
+                          "flag_1w_recycle": {
+                            "type": "boolean",
+                            "description": "- True indicates a recycle number flag detected within the last 7 days.\n- False indicates no recycle number flag detected within the last 7 days.\n",
+                            "example": true
+                          },
+                          "flag_1m_recycle": {
+                            "type": "boolean",
+                            "description": "- True indicates a recycle number flag detected within the last 30 days.\n- False indicates no recycle number flag detected within the last 30 days.\n",
+                            "example": false
+                          },
+                          "flag_2m_recycle": {
+                            "type": "boolean",
+                            "description": "- True indicates a recycle number flag detected within the last 60 days.\n- False indicates no recycle number flag detected within the last 60 days.\n",
+                            "example": false
+                          },
+                          "flag_3m_recycle": {
+                            "type": "boolean",
+                            "description": "- True indicates a recycle number flag detected within the last 90 days.\n- False indicates no recycle number flag detected within the last 90 days.\n",
+                            "example": false
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/api/v1/idm/verifyInactiveDate": {
+        "post": {
+            "id":11,
+          "summary": "Verify Inactive Date",
+          "description": "This endpoint verifies the proximity of the inactive date for a given MSISDN.",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "tags": [
+            "Inactive Date Verification"
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "merchant_transaction_id": {
+                      "type": "string",
+                      "description": "Unique transaction ID for the verification request.",
+                      "example": "trx-verifyInactiveDate-0001"
+                    },
+                    "msisdn": {
+                      "type": "string",
+                      "description": "The MSISDN (phone number) to verify.",
+                      "example": 62856123456
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "Bearer token for authenticating the request.",
+              "example": "Bearer xxxxxx"
+            },
+            {
+              "in": "header",
+              "name": "Content-Type",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The content type of the request.",
+              "example": "application/json"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully verified inactive date",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "description": "The HTTP status code of the response.",
+                        "example": 200
+                      },
+                      "transaction_id": {
+                        "type": "string",
+                        "description": "The unique transaction ID associated with this verification.",
+                        "example": "2607050d-a627-482a-bdeb-5aab6d7e1097"
+                      },
+                      "status_message": {
+                        "type": "string",
+                        "description": "The status message of the operation.",
+                        "example": "success"
+                      },
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "inactive_date": {
+                            "type": "integer",
+                            "description": "The proximity of the inactive date, with each value representing a day range:\n- 1: Less than 1 day (\u003C 1 day)\n- 2: 1 - 3 days (\u003E= 1 day and \u003C 3 days)\n- 3: 3 - 7 days (\u003E= 3 days and \u003C 7 days)\n- 4: 7 - 30 days (\u003E= 7 days and \u003C 30 days)\n- 5: More than 30 days (\u003E 30 days)\n",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - Invalid input"
+            },
+            "401": {
+              "description": "Unauthorized - Invalid token or missing authorization"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      }
+    },
+    "tags": []
+  }
