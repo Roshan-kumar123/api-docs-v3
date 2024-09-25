@@ -103,7 +103,8 @@ export function APIExplorer() {
         const response = await fetch("/data/dummy-data.json");
         if (!response.ok) throw new Error("Failed to fetch JSON data");
         const data = await response.json();
-        setJsonData(transformOpenAPIData(data));
+        const transformedData = transformOpenAPIData(data);
+        setJsonData(transformedData);
         setLoading(false);
       } catch (error) {
         console.error("Error loading JSON file:", error);
@@ -112,6 +113,27 @@ export function APIExplorer() {
     };
     fetchOpenAPIData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && jsonData.length > 0) {
+      const sortedApis = [...jsonData].sort((a, b) => {
+        switch (sortBy) {
+          case "Name A-Z":
+            return a.name.localeCompare(b.name);
+          case "Name Z-A":
+            return b.name.localeCompare(a.name);
+          default:
+            return 0;
+        }
+      });
+
+      // Set the first API in the sorted list as the default selected API
+      if (sortedApis.length > 0) {
+        setSelectedApi(sortedApis[0]);
+        setActiveApiId(sortedApis[0].id);
+      }
+    }
+  }, [jsonData, sortBy, loading]);
 
   const transformOpenAPIData = (data: any): APIData[] => {
     const paths = data.paths;
